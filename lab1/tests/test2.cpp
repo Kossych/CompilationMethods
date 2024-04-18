@@ -1,15 +1,16 @@
 #include "../lib/Analyzer.h"
 
 int main() {
-    std::string str = "(a+b*a)*(b*b+a*(a+b+a))";
+    std::string str = "!(a+b*a)*(b*b+a*(a+b+a))!";
     std::set<char> terms{'a', 'b', '+', '*', '!', '(', ')'};
     std::set<char> nonterms{'B', 'T', 'M', 'A'};
+    std::vector<char> nontermsSequence{'B', 'T', 'M'};
     std::map<char, std::vector<std::string>> rules{
         {'A', {"!B!"}},
         {'B', {"T", "T+B"}}, 
         {'T', {"M", "M*T"}}, 
         {'M', {"a", "b", "(B)"}}};
-    Analyzer Analyzer(Grammar(terms, nonterms, rules));
+    Analyzer Analyzer(Grammar(terms, nonterms, rules, nontermsSequence));
     try{
     auto res = Analyzer.analyze(str);
     for(auto it: res) {

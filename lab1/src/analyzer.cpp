@@ -4,10 +4,11 @@ Grammar::Grammar() {
     
 }
 
-Grammar::Grammar(std::set<char> terms, std::set<char> nonterms, std::map<char, std::vector<std::string>> rules) {
+Grammar::Grammar(std::set<char> terms, std::set<char> nonterms, std::map<char, std::vector<std::string>> rules, std::vector<char> nontermsSequence) {
     this->terms = terms;
     this->nonterms = nonterms;
     this->rules = rules;
+    this->nontermsSequence = nontermsSequence;
 }
 
 void Grammar::addRule(char from, std::string to) {
@@ -17,13 +18,13 @@ void Grammar::addRule(char from, std::string to) {
 int Grammar::getIndex(Element elem) {
     if(elem.index == -1) return -1;
     int index = elem.index + 1;
-    for(auto nonterm: nonterms) {
+    for(auto nonterm: nontermsSequence) {
         if(nonterm == elem.symbol) {
             return index;
         }
         index += rules[nonterm].size();
     }
-    throw "Not find rule for given term";
+    throw std::invalid_argument("Not find rule for given term");
 }
 
 bool Grammar::isNonTerm(char symbol) {
@@ -33,7 +34,7 @@ bool Grammar::isNonTerm(char symbol) {
     for(auto it: terms) {
         if(it == symbol) return false;
     }
-    throw "Given symbol is not in the grammar";
+    throw std::invalid_argument("Given symbol is not in the grammar");
 }
 
 std::map<int, std::string> Grammar::getRuleIndexes() {
@@ -125,7 +126,7 @@ std::vector<int> Analyzer::analyze(std::string str) {
                     break;
                 } else {
                     if((i == 0) && (l1.top().symbol == initSymbol) && (l1.top().index == grammar.rules[initSymbol].size())) { // step 6b
-                        throw "Couldn't find the output for given string";
+                        throw std::invalid_argument("Couldn't find the output for given string");
                         break;
                     } else { // step 6c
                         popRule(l2, l1.top());
@@ -157,7 +158,7 @@ void Analyzer::popRule(std::stack<char> &l2, Element elem) {
     std::string rule = grammar.rules[elem.symbol][elem.index];
     for(auto it: rule) {
         if(l2.top() != it) {
-            throw "Trying to pop nonterminal when it's missing";
+            throw std::invalid_argument("Trying to pop nonterminal when it's missing");
         }
         l2.pop();
     }

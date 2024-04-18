@@ -7,6 +7,7 @@
 #include <stack>
 #include <iostream>
 #include <algorithm>
+#include <exception>
 
 struct Element;
 
@@ -14,10 +15,11 @@ struct Grammar {
     std::set<char> terms;
     std::set<char> nonterms;
     std::map<char, std::vector<std::string>> rules;
+    std::vector<char> nontermsSequence;
 
     Grammar();
     
-    Grammar(std::set<char>, std::set<char>, std::map<char, std::vector<std::string>>);
+    Grammar(std::set<char>, std::set<char>, std::map<char, std::vector<std::string>>, std::vector<char>);
 
     void addRule(char, std::string);
     int getIndex(Element);

@@ -4,11 +4,12 @@ int main() {
     std::string str = "a+b";
     std::set<char> terms{'a', 'b', '+', '*'};
     std::set<char> nonterms{'B', 'T', 'M'};
+    std::vector<char> nontermsSequence{'B', 'T', 'M'};
     std::map<char, std::vector<std::string>> rules{
         {'B', {"T+B", "T"}}, 
         {'T', {"M", "M*T"}}, 
         {'M', {"a", "b"}}};
-    Analyzer Analyzer(Grammar(terms, nonterms, rules));
+    Analyzer Analyzer(Grammar(terms, nonterms, rules, nontermsSequence));
     try{
     auto res = Analyzer.analyze(str);
     for(auto it: res) {
