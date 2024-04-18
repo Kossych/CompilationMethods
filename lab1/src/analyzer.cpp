@@ -66,7 +66,8 @@ void Analyzer::addRule(char from, std::string to) {
 std::vector<int> Analyzer::analyze(std::string str) {
     std::stack<Element> l1{};
     std::stack<char> l2{};
-    l2.push((*(grammar.rules.begin())).first);
+    char initSymbol = (*(grammar.rules.begin())).first;
+    l2.push(initSymbol);
     State state = Action;
     int i = 0;
     int strLength = str.length();
@@ -123,7 +124,7 @@ std::vector<int> Analyzer::analyze(std::string str) {
                     state = Action;
                     break;
                 } else {
-                    if(i == 0) { // step 6b
+                    if((i == 0) && (l1.top().symbol == initSymbol) && (l1.top().index == grammar.rules[initSymbol].size())) { // step 6b
                         throw "Couldn't find the output for given string";
                         break;
                     } else { // step 6c
